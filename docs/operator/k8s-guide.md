@@ -497,17 +497,17 @@ renew-fts-proxy: Termination time: 2024-05-31T15:49:15
 
 ```yaml
 additionalEnvs:
-	- name: USERCERT_NAME
-	  value: na58dst1.usercert.pem
-	- name: USERKEY_NAME
-	  value: na58dst1.userkey.pem
-	- name: RUCIO_FTS_SECRETS
-	  value: rucio-daemons-rucio-x509up
-	- name: GRID_PASSPHRASE
-	  valueFrom:
-		secretKeyRef:
-		  name: rucio-daemons-fts-passphrase
-		  key: passphrase
+  - name: USERCERT_NAME
+    value: na58dst1.usercert.pem
+  - name: USERKEY_NAME
+    value: na58dst1.userkey.pem
+  - name: RUCIO_FTS_SECRETS
+    value: rucio-daemons-rucio-x509up
+  - name: GRID_PASSPHRASE
+    valueFrom:
+    secretKeyRef:
+      name: rucio-daemons-fts-passphrase
+      key: passphrase
 ```
 
 A diagram of how the proxy certificate is created and mounted on the daemons is displayed below: 
@@ -543,9 +543,9 @@ secretMounts:
 These settings configure how the Rucio UI will connect to the main Rucio service and the authentication service through specified proxies.
 ```yaml
 proxy:
-	rucioProxy: "compass-rucio.cern.ch"
-	rucioAuthProxy: "compass-rucio-auth.cern.ch"
-	rucioAuthProxyScheme: "https"
+  rucioProxy: "compass-rucio.cern.ch"
+  rucioAuthProxy: "compass-rucio-auth.cern.ch"
+  rucioAuthProxyScheme: "https"
 ```
 
 # Setting up Rucio
