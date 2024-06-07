@@ -92,8 +92,9 @@ docker run --rm \
 
 This command will setup all the necessary tables in the db, and additionally will create a rucio admin user. The admin user will be used when setting up rucio. ***Please take note of the username and passw.***
 
->[!tip] Tip
->Notice the syntax of `RUCIO_CFG_DATABASE_DEFAULT="postgresql://<db-user>:<passw>@<dbod-url>:<dobd-port>/<db-name>"`
+:::tip
+Notice the syntax of `RUCIO_CFG_DATABASE_DEFAULT="postgresql://<db-user>:<passw>@<dbod-url>:<dobd-port>/<db-name>"`
+:::
 ### 2. The bootstrapping pod
 
 Create a `init-pod.yaml` file and apply it as specified in the readme of the [k8s_tutorial](https://github.com/rucio/k8s-tutorial/blob/master/README.md), replace the `<PASSWORD>` with the secret needed to connect to the database:
@@ -129,8 +130,9 @@ And then apply the pod config:
 ```
 kubectl apply -f init-pod.yaml
 ```
->[!warning] Reminder
->Please notice that in this case, the various credentials will have to be properly stored as secrets. See the Managing Secrets section for more information.
+:::warning
+Please notice that in this case, the various credentials will have to be properly stored as secrets. See the Managing Secrets section for more information.
+:::
 # Populating the cluster
 The following sections are based on the deployment of the [COMPASS Rucio instance](https://gitlab.cern.ch/rucio-it/flux-compass).
 ## Creating a LanDB set
@@ -144,10 +146,10 @@ Create a [new LanDB set](https://landb.cern.ch/portal/sets/create), following th
 OPENSTACK_PROJECT=cc059d57-6e98-4688-a3be-aae2b451868b,<your-openstack-project-ID>
 ```
 
->[!tip] LoadBalancer tip
->The ID `cc059d57-6e98-4688-a3be-aae2b451868b` will allow the LoadBalancer as a Service (LBaaS) instance to [assign LBs to this set](https://clouddocs.web.cern.ch/networking/load_balancing.html#adding-load-balancer-to-landb-sets). In the specific case of the COMPASS rucio instance, the `openstack-landb-set-access` is being set as a member of the `rucio-it-admins` egroup.
->Please refer to the LoadBalancers section for more information.
-
+:::tip[LoadBalancer tip]
+The ID `cc059d57-6e98-4688-a3be-aae2b451868b` will allow the LoadBalancer as a Service (LBaaS) instance to [assign LBs to this set](https://clouddocs.web.cern.ch/networking/load_balancing.html#adding-load-balancer-to-landb-sets). In the specific case of the COMPASS rucio instance, the `openstack-landb-set-access` is being set as a member of the `rucio-it-admins` egroup.
+Please refer to the LoadBalancers section for more information.
+:::
 ![[/img/landb-set-create.png]]
 
 ## Managing secrets
@@ -251,15 +253,15 @@ Where:
 Then `kubeseal` perform the encryption and the encoding, saving the secret to a file stored in `SECRETS_STORE`.
 Finally, `kubectl apply` applies the secret to the cluster. Please notice that is eventually also achieved via flux, by pushing the secret file to the repository.
 
->[!tip] Secret tip
->IF `kubeseal` returns an error, it's probably because it's not installed:
->```sh
+:::tip[Secret tip]
+IF `kubeseal` returns an error, it's probably because it's not installed:
+```sh
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.18.0/kubeseal-0.18.0-linux-amd64.tar.gz
 tar xfz kubeseal-0.18.0-linux-amd64.tar.gz
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
->```
->Adjust the version and the build details according to your machine.
-
+```
+Adjust the version and the build details according to your machine.
+:::
 The content of the secret will be of this type: 
 ```yaml ss_rucio-servers-hostcert.yaml
 apiVersion: bitnami.com/v1alpha1
@@ -436,9 +438,9 @@ Together with the service account, we also need the corresponding user <u>grid c
 
 #### How to connect to the proper VO?
 
->[!tip] VO vs VOMS
->The VOMS (Virtual Organization Membership Service) is an attribute authority which serves as central repository for VO (Virtual Organization) user authorization information
-
+:::tip[VO vs VOMS]
+The VOMS (Virtual Organization Membership Service) is an attribute authority which serves as central repository for VO (Virtual Organization) user authorization information
+:::
 1. Specify which VO to use; in our case is `vo.compass.cern.ch`
 2. If not present, create a config file for the VOMS in `/etc/vomses`.
 In our case, looking at lxplus we have a file named `vo.compass.cern.ch-voms-compass-auth.cern.ch` that contains
@@ -528,19 +530,19 @@ The secrets are then mounted in the following block:
 ```yaml
 secretMounts:
   - secretName: hostcert
-	mountPath: /etc/grid-security/hostcert.pem
-	subPath: hostcert.pem
+  mountPath: /etc/grid-security/hostcert.pem
+  subPath: hostcert.pem
   - secretName: hostkey
-	mountPath: /etc/grid-security/hostkey.pem
-	subPath: hostkey.pem
+  mountPath: /etc/grid-security/hostkey.pem
+  subPath: hostkey.pem
   - secretName: cafile
-	mountPath: /etc/grid-security/ca.pem
-	subPath: ca.pem
+  mountPath: /etc/grid-security/ca.pem
+  subPath: ca.pem
 ```
 ### Proxy block
 These settings configure how the Rucio UI will connect to the main Rucio service and the authentication service through specified proxies.
 ```yaml
-  proxy:
+proxy:
 	rucioProxy: "compass-rucio.cern.ch"
 	rucioAuthProxy: "compass-rucio-auth.cern.ch"
 	rucioAuthProxyScheme: "https"
@@ -550,23 +552,23 @@ These settings configure how the Rucio UI will connect to the main Rucio service
 ## Installing `rucio-clients`
 Please refer to the [installation page].
 
->[!tldr] TL;DR
->`pip install rucio-clients`
-
+:::info[TL;DR]
+`pip install rucio-clients`
+:::
 ### Installing `gfal`
 
->[!tip] Remember to install dependencies
->Install `gfal2` "properly":
->https://dmc-docs.web.cern.ch/dmc-docs/gfal2-python/pip-install.html
->AND install these plugins:
->```
+:::tip[Remember to install dependencies]
+Install `gfal2` "properly":
+https://dmc-docs.web.cern.ch/dmc-docs/gfal2-python/pip-install.html
+AND install these plugins:
+```
  sudo dnf install gfal2-plugin-srm
  sudo dnf install gfal2-plugin-xrootd
  sudo dnf install gfal2-plugin-mock
  sudo dnf install gfal2-plugin-file
  sudo dnf install gfal2-plugin-http
->```
-
+```
+:::
 ## Creating the Rucio root account configuration file
 This is the minimal setup for the configuration file (`rucio.cfg`):
 ```yaml
