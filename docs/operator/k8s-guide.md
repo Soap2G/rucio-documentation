@@ -84,7 +84,7 @@ To bootstrap the db, there are two possibilities:
 
 ```sh
 docker run --rm \
-  -e RUCIO_CFG_DATABASE_DEFAULT="postgresql://rucio:xxx@dbod-g-test-db.cern.ch:6601/rucio" \
+  -e RUCIO_CFG_DATABASE_DEFAULT="postgresql://rucio:xxx@dbod-rucioitdb.cern.ch:<port>/rucio" \
   -e RUCIO_CFG_BOOTSTRAP_USERPASS_IDENTITY="admin" \
   -e RUCIO_CFG_BOOTSTRAP_USERPASS_PWD="xxx" \
   rucio/rucio-init
