@@ -2,8 +2,14 @@
 id: k8s_guide
 title: A Kubernetes tutorial
 ---
-
 # Getting Started
+:::warning[DISCLAIMER]
+This tutorial contains some parts that are CERN-specific. <br/>
+The tools utilised to set up and to run the cluster are chosen accordingly. Feel free to use your own.
+:::
+
+In order to efficiently manage the cluster and implement continuous delivery, the following tools are required.
+
 ## Kubernetes: `kubectl`
 [Reference Documentation](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
 ## Helm Charts
@@ -42,15 +48,17 @@ flux bootstrap gitlab \
   --branch=<main branch> \
   --path=<path> \
 ```
-## Monitoring: `k9s`
+## (optional) Monitoring: `k9s`
 Get the binary from [here](https://github.com/derailed/k9s/releases) looking for the proper dist; extract, and move to `/usr/local/bin/
-# Creating the cluster on Openstack
+
+# Setting up the CERN infrastructure
+## Creating the cluster on Openstack
 Please refer to the [documentation](https://kubernetes.docs.cern.ch/docs/getting-started/).
 It is recommended to choose a master node with a sufficient amount of memory, e.g. `m2.large`.
 
 The minimum working configuration consists of 1 master node and 5 worker nodes.
-# Create the database with DBOD
 
+## Create the database with DBOD
 1. Create a DataBase On Demand (DBOD) using the [DBOD dashboard](https://dbod.web.cern.ch/pages/dashboard);  `postgres` is highly recommended. 
 	- Have to wait for the db to be approved. Will get a mail and will receive admin credentials (to be changed) 
 2. https://github.com/vre-hub/vre/wiki/Software-components#2-database
@@ -78,9 +86,9 @@ Then, modify the `pg.hba.conf` configuration file on the DBOD dashboard with the
 host	rucio		rucio		0.0.0.0/0	md5
 ```
 
-## Bootstrapping the database
+### Bootstrapping the database
 To bootstrap the db, there are two possibilities:
-### 1. The [Rucio DB init container](https://github.com/rucio/containers/tree/master/init)
+#### 1. The [Rucio DB init container](https://github.com/rucio/containers/tree/master/init)
 
 ```sh
 docker run --rm \
@@ -95,7 +103,7 @@ This command will setup all the necessary tables in the db, and additionally wil
 :::tip
 Notice the syntax of `RUCIO_CFG_DATABASE_DEFAULT="postgresql://<db-user>:<passw>@<dbod-url>:<dobd-port>/<db-name>"`
 :::
-### 2. The bootstrapping pod
+#### 2. The bootstrapping pod
 
 Create a `init-pod.yaml` file and apply it as specified in the readme of the [k8s_tutorial](https://github.com/rucio/k8s-tutorial/blob/master/README.md), replace the `<PASSWORD>` with the secret needed to connect to the database:
 
@@ -133,9 +141,8 @@ kubectl apply -f init-pod.yaml
 :::warning
 Please notice that in this case, the various credentials will have to be properly stored as secrets. See the Managing Secrets section for more information.
 :::
-# Populating the cluster
-The following sections are based on the deployment of the [COMPASS Rucio instance](https://gitlab.cern.ch/rucio-it/flux-compass).
-## Creating a LanDB set
+
+### Creating a LanDB set
 
 Create a [new LanDB set](https://landb.cern.ch/portal/sets/create), following the recommendations: 
 1. Type: Interdomain
@@ -152,8 +159,9 @@ Please refer to the LoadBalancers section for more information.
 :::
 ![[/img/landb-set-create.png]]
 
+# Populating the cluster
+The following sections are based on the deployment of the [COMPASS Rucio instance](https://gitlab.cern.ch/rucio-it/flux-compass).
 ## Managing secrets
-
 ### Sealed-Secrets
 [Reference Documentation](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#installation).
 [Reference Helm chart](https://gitlab.cern.ch/rucio-it/flux-compass/-/blob/master/sync/sealed-secrets.yaml?ref_type=heads).
