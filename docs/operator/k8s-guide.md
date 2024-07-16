@@ -142,7 +142,7 @@ kubectl apply -f init-pod.yaml
 Please notice that in this case, the various credentials will have to be properly stored as secrets. See the Managing Secrets section for more information.
 :::
 
-### Creating a LanDB set
+## Creating a LanDB set
 
 Create a [new LanDB set](https://landb.cern.ch/portal/sets/create), following the recommendations: 
 1. Type: Interdomain
