@@ -80,7 +80,7 @@ ALTER GROUP rucio ADD USER admin;
 CREATE DATABASE rucio;
 ```
 
-Then, modify the `pg.hba.conf` configuration file on the DBOD dashboard with the following values, to allow `rucio` to edit the db:
+Then, modify the `pg.hba.conf` configuration file on the DBOD dashboard with the following values, to allow `rucio` to access the db:
 
 ```
 host	rucio		rucio		0.0.0.0/0	md5
@@ -104,8 +104,7 @@ This command will setup all the necessary tables in the db, and additionally wil
 Notice the syntax of `RUCIO_CFG_DATABASE_DEFAULT="postgresql://<db-user>:<passw>@<dbod-url>:<dobd-port>/<db-name>"`
 :::
 #### 2. The bootstrapping pod
-
-Create a `init-pod.yaml` file and apply it as specified in the readme of the [k8s_tutorial](https://github.com/rucio/k8s-tutorial/blob/master/README.md), replace the `<PASSWORD>` with the secret needed to connect to the database:
+Create a `init-pod.yaml` file and apply it as specified in the readme of the [k8s_tutorial](https://github.com/rucio/k8s-tutorial/blob/master/README.md), replace `<PASSWORD>` with the secret needed to connect to the database:
 
 ```yaml
 apiVersion: v1
@@ -160,7 +159,13 @@ Please refer to the LoadBalancers section for more information.
 ![[/img/landb-set-create.png]]
 
 # Populating the cluster
-The following sections are based on the deployment of the [COMPASS Rucio instance](https://gitlab.cern.ch/rucio-it/flux-compass).
+There are four main components that need to be installed in oder to have the Rucio cluster operative:
+1. Rucio Servers
+2. Rucio Authentication
+3. Rucio Daemons
+4. Rucio Web UI
+
+The following sections are based on the deployment of the [COMPASS Rucio instance](https://gitlab.cern.ch/rucio-it/flux-compass), within the CERN infrastructure.
 ## Managing secrets
 ### Sealed-Secrets
 [Reference Documentation](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#installation).
@@ -177,8 +182,7 @@ kubectl apply -f sealed-secrets.yaml
 ```
 
 An example of the `sealed-secrets.yaml` configuration file is provided below:
-```yaml
-# sealed-secrets.yaml
+```yaml sealed-secrets.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -462,7 +466,7 @@ SO we need to create a secret with the proper content and ***mount*** it in the 
   mountPath: /etc/vomses/
 ```
 
-In this way, we'll get the proper output from the cron-job:
+In this way, we'll get something like the following output from the cron-job:
 
 ```sh
 renew-fts-proxy: =================== Delegating ========================    
@@ -719,5 +723,3 @@ Add some more complications
 rucio add-dataset test:dataset3
 rucio attach test:dataset3 test:file4
 ```
-# Troubleshooting
-
